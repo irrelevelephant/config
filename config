@@ -158,4 +158,11 @@ bar {
 
 new_window none
 
+bind 121 exec "amixer -q set Master toggle"
+bind 122 exec "amixer -q set Master 3%-"
+bind 123 exec "amixer -q set Master 3%+"
+
+bind 232 exec "xbacklight -dec 20"
+bind 233 exec "xbacklight -inc 20"
+
 exec --no-startup-id nm-applet
