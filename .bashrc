@@ -118,3 +118,6 @@ fi
 
 # autostart X at login
 [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
+
+# set environment variables
+export EDITOR=emacs
