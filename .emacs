@@ -14,6 +14,9 @@
 (setq-default c-basic-offset 4)
 (setq-default indent-tabs-mode nil)
 
+(put 'downcase-region 'disabled nil)
+(global-auto-revert-mode t)
+
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)

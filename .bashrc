@@ -116,8 +116,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# autostart X at login
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
+EDITOR="emacs"
+VISUAL="$EDITOR"
 
-# set environment variables
-export EDITOR=emacs
+alias piano="pianoteq/amd64/Pianoteq\ 5\ STAGE"
+export PATH="$PATH:~/.local/bin"
