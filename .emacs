@@ -14,6 +14,7 @@
 (setq-default c-basic-offset 4)
 (setq-default indent-tabs-mode nil)
 
+(put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (global-auto-revert-mode t)
 
@@ -21,3 +22,10 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
+
+(add-hook 'markdown-mode-hook #'visual-line-mode)
+
+(add-hook 'scss-mode-hook
+    (lambda ()
+        (setq c-basic-offset 2)
+        (setq indent-tabs-mode nil)))
