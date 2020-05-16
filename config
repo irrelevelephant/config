@@ -7,7 +7,7 @@
 
 # i3 config file (v4)
 #
-# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
 
@@ -30,7 +30,7 @@ font pango:monospace 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -49,10 +49,10 @@ bindsym $mod+l focus up
 bindsym $mod+semicolon focus right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+#bindsym $mod+Left focus left
+#bindsym $mod+Down focus down
+#bindsym $mod+Up focus up
+#bindsym $mod+Right focus right
 
 # move focused window
 bindsym $mod+Shift+j move left
@@ -61,10 +61,10 @@ bindsym $mod+Shift+l move up
 bindsym $mod+Shift+semicolon move right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+#bindsym $mod+Shift+Left move left
+#bindsym $mod+Shift+Down move down
+#bindsym $mod+Shift+Up move up
+#bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
 bindsym $mod+h split h
@@ -87,7 +87,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+#bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
@@ -152,17 +152,40 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
-        mode hide
+    status_command i3status
+    mode hide
+    tray_output primary
 }
 
+# custom styling
 new_window none
+hide_edge_borders both
 
-bind 121 exec "amixer -q set Master toggle"
-bind 122 exec "amixer -q set Master 3%-"
-bind 123 exec "amixer -q set Master 3%+"
-
-bind 232 exec "xbacklight -dec 20"
-bind 233 exec "xbacklight -inc 20"
-
+# startup
+exec --no-startup-id xsetroot -solid "#000000"
+exec --no-startup-id clipit
+exec --no-startup-id xmodmap ~/.xmodmaprc
+exec --no-startup-id xinput --set-button-map 'PS/2 Generic Mouse' 3 2 1 4 5 6 7
+exec --no-startup-id redshift-gtk
+exec --no-startup-id ~/.screenlayout/desk.sh
 exec --no-startup-id nm-applet
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+
+# custom exec bindings
+bindsym $mod+Return exec urxvt
+bindsym $mod+Shift+backslash exec i3lock -c 000000
+bindsym $mod+Shift+s exec systemctl suspend
+bindsym $mod+i exec i3-input
+
+# move across displays
+bindsym $mod+Shift+Left move workspace to output left
+bindsym $mod+Shift+Down move workspace to output down
+bindsym $mod+Shift+Up move workspace to output up
+bindsym $mod+Shift+Right move workspace to output right
+
+# app-specific configuration
+for_window [class="Chromium-browser"] floating disable, move window to workspace current
+
+# app-specific bindings
+bindsym $mod+c [class="Chromium-browser"] focus
+bindsym $mod+x [class="URxvt"] focus
