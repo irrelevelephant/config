@@ -18,7 +18,7 @@ a = !git lg2
 [push]
 	default = current
 [core]
-	editor = emacs -nw
+	editor = emacs-snapshot -nw -q
 [pull]
 	default = current
 	rebase = true
