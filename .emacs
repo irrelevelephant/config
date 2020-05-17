@@ -24,6 +24,7 @@
 (menu-bar-mode -1)
 (setq backup-inhibited t)
 (setq auto-save-default nil)
+(setq auto-save-list-file-prefix nil)
 (global-auto-revert-mode t)
 (setq-default column-number-mode t)
 (setq-default indent-tabs-mode nil)
@@ -38,23 +39,23 @@
 (setenv "BASH_ENV" "~/.bashrc")
 
 ; themes
-;(setq doom-theme-name 'doom-Iosvkem)
-;(use-package doom-themes
-;  :config
-;  (load-theme doom-theme-name t)
-;  (doom-themes-org-config)
-;  (doom-themes-set-faces doom-theme-name
-;    '(default :background "black")))
+(setq doom-theme-name 'doom-vibrant)
+(use-package doom-themes
+ :config
+ (load-theme doom-theme-name t)
+ (doom-themes-org-config)
+ (doom-themes-set-faces doom-theme-name
+   '(default :background "black")))
 
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :hook (after-init . doom-modeline-mode)
-;;   :config
-;;   (setq
-;;    doom-modeline-buffer-file-name-style 'truncate-with-project
-;;    doom-modeline-minor-modes t
-;;    doom-modeline-lsp t
-;;    inhibit-compacting-font-caches t))
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq
+   doom-modeline-buffer-file-name-style 'truncate-with-project
+   doom-modeline-minor-modes t
+   doom-modeline-lsp t
+   inhibit-compacting-font-caches t))
 
 ; prog mode
 (global-display-line-numbers-mode)
@@ -273,7 +274,8 @@
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.ftl\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.ftl\\'" . web-mode)
+  (add-to-list 'auto-mode-alist '("\\.csproj\\'" . web-mode))))
 
 ; jinja
 (use-package jinja2-mode
@@ -284,6 +286,37 @@
 (use-package markdown-mode
   :config
   (add-hook 'markdown-mode-hook #'visual-line-mode))
+
+; csharp
+(use-package company)
+
+(use-package omnisharp
+  :config
+  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t))
+
+(eval-after-load
+  'company
+  '(add-to-list 'company-backends #'company-omnisharp))
+
+(defun my-csharp-mode-setup ()
+  (omnisharp-mode)
+  (company-mode)
+  (flycheck-mode)
+
+  (setq indent-tabs-mode nil)
+  (setq c-syntactic-indentation t)
+  (c-set-style "ellemtel")
+  (setq c-basic-offset 4)
+  (setq truncate-lines t)
+  (setq tab-width 4)
+  (setq evil-shift-width 4)
+
+  ;csharp-mode README.md recommends this too
+  ;(electric-pair-mode 1)       ;; Emacs 24
+  ;(electric-pair-local-mode 1) ;; Emacs 25
+
+  (local-set-key (kbd "C-c r r") 'omnisharp-run-code-action-refactoring)
+  (local-set-key (kbd "C-c C-c") 'recompile))
 
 ; java
 (add-hook 'java-mode-hook (lambda () (setq truncate-lines t)))
