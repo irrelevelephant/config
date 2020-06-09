@@ -68,7 +68,6 @@
 (global-set-key (kbd "C-c s") 'sort-lines)
 
 ; buffer switching
-(iswitchb-mode 1)
 (global-set-key "\C-x\C-b" 'buffer-menu)
 
 ; window management
@@ -257,12 +256,15 @@
   (add-to-list 'auto-mode-alist '("\\.template\\'" . yaml-mode))
   (add-hook 'yaml-mode-hook 'auto-complete-mode))
 
-;json
+; json
 (add-hook 'json-mode-hook
           (lambda ()
             (make-local-variable 'js-indent-level)
             (setq js-indent-level 2)
             (setq truncate-lines t)))
+
+; javascript
+(setq js-indent-level 4)
 
 ; webmode
 (use-package web-mode
@@ -288,20 +290,8 @@
   (add-hook 'markdown-mode-hook #'visual-line-mode))
 
 ; csharp
-(use-package company)
-
-(use-package omnisharp
-  :config
-  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t))
-
-(eval-after-load
-  'company
-  '(add-to-list 'company-backends #'company-omnisharp))
-
 (defun my-csharp-mode-setup ()
-  (omnisharp-mode)
-  (company-mode)
-  (flycheck-mode)
+  (subword-mode)
 
   (setq indent-tabs-mode nil)
   (setq c-syntactic-indentation t)
@@ -309,79 +299,40 @@
   (setq c-basic-offset 4)
   (setq truncate-lines t)
   (setq tab-width 4)
-  (setq evil-shift-width 4)
+  (setq evil-shift-width 4))
 
-  ;csharp-mode README.md recommends this too
-  ;(electric-pair-mode 1)       ;; Emacs 24
-  ;(electric-pair-local-mode 1) ;; Emacs 25
+(use-package lsp-ui)
+(use-package lsp-mode
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (add-hook 'csharp-mode-hook #'lsp)
+  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
+  :custom
+  (lsp-prefer-flymake nil)
+  (lsp-file-watch-threshold nil)
+  (lsp-file-watch-ignored
+   '(".idea"
+     "node_modules"
+     ".git"
+     "target"
+     "build"
+     "env"
+     "logs")))
 
-  (local-set-key (kbd "C-c r r") 'omnisharp-run-code-action-refactoring)
-  (local-set-key (kbd "C-c C-c") 'recompile))
-
-; java
-(add-hook 'java-mode-hook (lambda () (setq truncate-lines t)))
-
-(defun java-prefs ()
-  (setq c-basic-offset 4)
-  (c-set-offset 'arglist-intro 8)
-  (c-set-offset 'arglist-cont-nonempty 8)
-  (c-set-offset 'statement-cont 8)
-  (c-set-offset 'annotation-var-cont 0)
-  (c-set-offset 'func-decl-cont 8))
-(add-hook 'java-mode-hook 'java-prefs)
-
-; java lsp
-;; (use-package lsp-mode
-;;   :config
-;;   (require 'lsp-ui)
-;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-;;   :custom
-;;   (lsp-session-file nil)
-;;   (lsp-prefer-flymake nil)
-;;   (lsp-file-watch-threshold nil)
-;;   (lsp-file-watch-ignored
-;;    '(".idea"
-;;      "node_modules"
-;;      ".git"
-;;      "target"
-;;      "build"
-;;      "env"
-;;      "logs"))
-;;   (lsp-java-import-exclusions
-;;     '("**/node_modules/**"
-;;       "**/.metadata/**"
-;;       "**/build"
-;;       "**/META-INF/maven/**"))
-;;   (lsp-ui-sideline-enable nil))
-
-;; (use-package hydra)
-;; (use-package company-lsp
-;;   :diminish company-mode
-;;   :custom
-;;   (company-lsp-cache-candidates 'auto)
-;;   (company-idle-delay 0)
-;;   (company-dabbrev-downcase 0)
-;;   :bind
-;;   (:map company-active-map
-;;         ("TAB" . company-complete-selection)
-;;         ("C-n" . company-select-next-or-abort)
-;;         ("C-p" . company-select-previous-or-abort)))
-;; (use-package lsp-java
-;;   :after lsp
-;;   :custom
-;;   (lsp-java-vmargs
-;;    '("-noverify"
-;;      "-Xmx1G"
-;;      "-XX:+UseG1GC"
-;;      "-XX:+UseStringDeduplication"
-;;      "-javaagent:/home/thmssmth/.emacs.d/lombok.jar"
-;;      "-Xbootclasspath/a:/home/thmssmth/.emacs.d/lombok.jar"))
-;;   (lsp-file-watch-ignored global-ignored-files)
-;;   (lsp-java-format-settings-url "/home/thmssmth/.emacs.d/eclipse-starling-java-code-style.xml"))
-
-;; (use-package flycheck
-;;   :after lsp-mode
-;;   :hook lsp-java)
+(use-package hydra)
+(use-package company-lsp
+  :diminish company-mode
+  :custom
+  (company-lsp-cache-candidates 'auto)
+  (company-idle-delay 0)
+  (company-dabbrev-downcase 0)
+  :bind
+  (:map company-active-map
+        ("TAB" . company-complete-selection)
+        ("C-n" . company-select-next-or-abort)
+        ("C-p" . company-select-previous-or-abort)))
+(use-package flycheck
+  :after lsp-mode)
 
 ;; (use-package dap-mode
 ;;   :after lsp-mode
@@ -390,59 +341,6 @@
 ;;   (dap-mode t)
 ;;   (dap-ui-mode t))
 
-;; (defun my/lsp ()
-;;   (interactive)
-;;   (let* ((brazil-session-file
-;;           (apply 'f-join (append (-slice (f-split (projectile-project-root)) 0 -2) '(".lsp-session-v1")))))
-;;     (when (not (f-exists? brazil-session-file)) (write-region "" nil brazil-session-file))
-;;     (when (and lsp-session-file (not (f-same? lsp-session-file brazil-session-file)))
-;;       (error (format "Session %s already open" lsp-session-file)))
-;;     (when (not lsp-session-file) (setq lsp--session nil))
-;;     (setq lsp-session-file brazil-session-file)
-;;     (message "Using LSP session at %s" lsp-session-file)
-;;     (lsp-deferred)))
-;; (add-hook 'java-mode-hook #'my/lsp)
-
-;; (add-hook 'java-mode-hook
-;;           (lambda() (subword-mode)))
-
 ;; (define-key java-mode-map (kbd "M-i") 'lsp-java-organize-imports)
 ;; (defalias 'tc 'dap-java-run-test-class)
 ;; (defalias 'tm 'dap-java-run-test-method)
-
-; javap
-(add-to-list 'file-name-handler-alist '("\\.class$" . javap-handler))
-
-(defun javap-handler (op &rest args)
-  "Handle .class files by putting the output of javap in the buffer."
-  (cond
-   ((eq op 'get-file-buffer)
-    (let ((file (car args)))
-      (with-current-buffer (create-file-buffer file)
-        (call-process "javap" nil (current-buffer) nil "-verbose"
-                      "-classpath" (file-name-directory file)
-                      (file-name-sans-extension
-                       (file-name-nondirectory file)))
-        (setq buffer-file-name file)
-        (setq buffer-read-only t)
-        (set-buffer-modified-p nil)
-        (goto-char (point-min))
-        (java-mode)
-        (current-buffer))))
-   ((javap-handler-real op args))))
-
-(defun javap-handler-real (operation args)
-  "Run the real handler without the javap handler installed."
-  (let ((inhibit-file-name-handlers
-         (cons 'javap-handler
-               (and (eq inhibit-file-name-operation operation)
-                    inhibit-file-name-handlers)))
-        (inhibit-file-name-operation operation))
-    (apply operation args)))
-
-; sim
-;(add-to-list 'load-path "~/Emacs-org-issues-mode/src")
-;(require 'org-issues-mode)
-;(org-issues-update/monitor-issues) ;; Sets up a timer to automatically keep your local Issues up-to-date
-
-(setq js-indent-level 2)
