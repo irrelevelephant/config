@@ -172,7 +172,7 @@
   ("C-x C-f" . counsel-find-file)
   ("C-c g" . counsel-git)
   ("C-c j" . counsel-git-grep)
-  ("C-c k" . counsel-ag)
+  ("C-c k" . counsel-rg)
   (:map minibuffer-local-map ("C-r" . counsel-minibuffer-history)))
 
 (use-package counsel
@@ -264,7 +264,7 @@
             (setq truncate-lines t)))
 
 ; javascript
-(setq js-indent-level 4)
+(setq js-indent-level 2)
 
 ; webmode
 (use-package web-mode
