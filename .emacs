@@ -258,13 +258,19 @@
 
 ; json
 (add-hook 'json-mode-hook
-          (lambda ()
-            (make-local-variable 'js-indent-level)
-            (setq js-indent-level 2)
-            (setq truncate-lines t)))
+  (lambda ()
+    (make-local-variable 'js-indent-level)
+    (setq js-indent-level 2)
+    (setq truncate-lines t)))
 
 ; javascript
-(setq js-indent-level 2)
+(add-hook 'js-mode-hook
+  (lambda ()
+    (subword-mode)
+    (setq truncate-lines t)
+    (setq indent-tabs-mode nil)
+    (setq js-indent-level 4)
+    (setq js-switch-indent-offset 4)))
 
 ; webmode
 (use-package web-mode
