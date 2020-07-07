@@ -166,8 +166,9 @@ exec --no-startup-id xsetroot -solid "#000000"
 exec --no-startup-id clipit
 exec --no-startup-id redshift-gtk -t 6500:2500
 exec --no-startup-id nm-applet
+exec --no-startup-id volumeicon
 exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
-exec --no-startup-id ~/.touchpad.sh
+exec --no-startup-id ~/.config/i3/touchpad.sh
 
 # custom exec bindings
 bindsym $mod+Return exec urxvt
@@ -182,9 +183,13 @@ bindsym $mod+Shift+Up move workspace to output up
 bindsym $mod+Shift+Right move workspace to output right
 
 # audio
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 1 +5%
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 1 -5%
-bindsym XF86AudioMute exec pactl set-sink-mute 1 toggle
+bindcode 123 exec pactl set-sink-volume 1 +5%
+bindcode 122 exec pactl set-sink-volume 1 -5%
+bindcode 121 exec pactl set-sink-mute 1 toggle
+
+# brightness
+bindcode 233 exec ~/.config/i3/brightness.sh up
+bindcode 232 exec ~/.config/i3/brightness.sh down
 
 # app-specific configuration
 for_window [class="Chromium-browser"] floating disable, move window to workspace current

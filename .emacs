@@ -33,6 +33,7 @@
 (delete-selection-mode 1)
 (put 'dired-find-alternate-file 'disabled nil)
 (setq find-file-visit-truename t)
+(setq create-lockfiles nil)
 
 (setq debug-on-error t)
 
@@ -281,7 +282,8 @@
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1)
   (company-mode +1)
-  (setq company-tooltip-align-annotations t))
+  (setq company-tooltip-align-annotations t)
+  (subword-mode))
 (use-package tide
   :ensure t
   :after (typescript-mode company flycheck)
@@ -312,7 +314,8 @@
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.ftl\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.csproj\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.csproj\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode)))
 
 ; jinja
 (use-package jinja2-mode
@@ -323,6 +326,11 @@
 (use-package markdown-mode
   :config
   (add-hook 'markdown-mode-hook #'visual-line-mode))
+
+; docker
+(use-package dockerfile-mode
+  :config
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
 
 ; csharp
 (defun my-csharp-mode-setup ()
