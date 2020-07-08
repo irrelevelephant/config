@@ -302,6 +302,22 @@
               (setup-tide-mode))))
 (flycheck-add-mode 'typescript-tslint 'web-mode)
 
+; graphql
+(use-package graphql-mode)
+(use-package mmm-mode)
+
+(mmm-add-classes
+    '((js-graphql
+          :submode graphql-mode
+          :face mmm-declaration-submode-face
+          :front "[^a-zA-Z]gql`" ;; regex to find the opening tag
+          :back "`"))) ;; regex to find the closing tag
+(mmm-add-mode-ext-class 'js-mode nil 'js-graphql)
+(mmm-add-mode-ext-class 'typescript-mode nil 'js-graphql)
+(setq mmm-global-mode 'maybe)
+;; Optional configuration that hides the background color for a highlighted block
+(setq mmm-submode-decoration-level 0)
+
 ; webmode
 (use-package web-mode
   :config
