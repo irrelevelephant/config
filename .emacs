@@ -39,14 +39,16 @@
 
 (setenv "BASH_ENV" "~/.bashrc")
 
+(setq-default find-args "-type f ! -path './node_modules/*' ! -path '*/\.*'")
+
 ; themes
 (setq doom-theme-name 'doom-vibrant)
 (use-package doom-themes
  :config
  (load-theme doom-theme-name t)
  (doom-themes-org-config)
- (doom-themes-set-faces doom-theme-name
-   '(default :background "black")))
+ (custom-set-faces
+  '(default ((t (:background "#000000"))))))
 
 (use-package doom-modeline
   :ensure t
@@ -125,6 +127,17 @@
   ("C-M-t" . sp-transpose-sexp)
   ("C-M-k" . sp-kill-sexp))
 
+; paredit
+(use-package paredit
+  :config
+    (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+    (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+    (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
+
 ; code folding
 (use-package hideshow
   :diminish hs-minor-mode
@@ -167,13 +180,16 @@
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
   (setq enable-recursive-minibuffers t)
+  (setq counsel-grep-base-command
+        "rg -i -M 240 --no-heading --line-number '%s' %s")
   :bind
   ("C-c C-r" . ivy-resume)
   ("M-x" . counsel-M-x)
   ("C-x C-f" . counsel-find-file)
   ("C-c g" . counsel-git)
   ("C-c j" . counsel-git-grep)
-  ("C-c k" . counsel-rg)
+  ("C-c k" . counsel-projectile-rg)
+  ("C-c f" . projectile-find-file)
   (:map minibuffer-local-map ("C-r" . counsel-minibuffer-history)))
 
 (use-package counsel
@@ -214,15 +230,22 @@
   (set-face-attribute 'magit-section-highlight nil :background "color-34" :foreground "brightwhite"))
 
 ; projectile
+(use-package counsel-projectile)
+
 (use-package projectile
   :after counsel
   :demand
   :config
-  (projectile-register-project-type 'brazil '("Config")
-                                    :compile "bb")
-  (projectile-register-project-type 'java '(".project")
-                                    :compile "bb"
-                                    :test-suffix "Test")
+  (projectile-register-project-type 'npm '("package.json")
+    :project-file "package.json")
+  (defcustom projectile-project-root-functions
+    '(projectile-root-local
+      projectile-root-bottom-up
+      projectile-root-top-down
+      projectile-root-top-down-recurring)
+    "A list of functions for finding project roots."
+    :group 'projectile
+    :type '(repeat function))
   (setq projectile-globally-ignored-directories
         (append global-ignored-files
                 projectile-globally-ignored-directories))
@@ -257,6 +280,11 @@
   (add-to-list 'auto-mode-alist '("\\.template\\'" . yaml-mode))
   (add-hook 'yaml-mode-hook 'auto-complete-mode))
 
+; bash
+(add-hook 'sh-mode-hook
+  (lambda ()
+    (setq truncate-lines t)))
+
 ; json
 (add-hook 'json-mode-hook
   (lambda ()
@@ -283,7 +311,9 @@
   (tide-hl-identifier-mode +1)
   (company-mode +1)
   (setq company-tooltip-align-annotations t)
-  (subword-mode))
+  (subword-mode)
+  (setq truncate-lines t)
+  (setq tide-tsserver-executable "node_modules/typescript/bin/tsserver"))
 (use-package tide
   :ensure t
   :after (typescript-mode company flycheck)
@@ -292,6 +322,8 @@
          (before-save . tide-format-before-save))
   :config
   (add-hook 'typescript-mode-hook #'setup-tide-mode))
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ; tsx
 (require 'web-mode)
@@ -303,8 +335,15 @@
 (flycheck-add-mode 'typescript-tslint 'web-mode)
 
 ; graphql
-(use-package graphql-mode)
-(use-package mmm-mode)
+(use-package graphql-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.graphqls\\'" . graphql-mode))
+  (add-hook 'graphql-mode-hook
+     (lambda() (subword-mode))))
+
+; mmm
+(use-package mmm-mode
+  :diminish mmm-mode)
 
 (mmm-add-classes
     '((js-graphql
@@ -403,3 +442,9 @@
 ;; (define-key java-mode-map (kbd "M-i") 'lsp-java-organize-imports)
 ;; (defalias 'tc 'dap-java-run-test-class)
 ;; (defalias 'tm 'dap-java-run-test-method)
+
+; go
+(use-package go-mode
+  :config
+  (autoload 'go-mode "go-mode" nil t)
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode)))
