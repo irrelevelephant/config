@@ -164,7 +164,7 @@ hide_edge_borders both
 # startup
 exec --no-startup-id xsetroot -solid "#000000"
 exec --no-startup-id clipit
-exec --no-startup-id redshift-gtk -t 6500:2500
+#exec --no-startup-id redshift-gtk -t 6500:2500
 exec --no-startup-id nm-applet
 exec --no-startup-id volumeicon
 exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
@@ -176,6 +176,7 @@ bindsym $mod+Shift+backslash exec i3lock -c 000000
 bindsym $mod+Shift+s exec systemctl suspend
 bindsym $mod+Shift+Escape exec i3lock -c 000000 && systemctl suspend
 bindsym $mod+i exec i3-input
+bindsym $mod+Shift+A exec scrot -s
 
 # move across displays
 bindsym $mod+Shift+Left move workspace to output left
@@ -191,6 +192,11 @@ bindcode 121 exec pactl set-sink-mute 1 toggle
 # brightness
 bindcode 233 exec ~/.config/i3/brightness.sh up
 bindcode 232 exec ~/.config/i3/brightness.sh down
+bindsym $mod+Shift+D exec redshift -P -O 2500K
+bindsym $mod+Shift+F exec redshift -P -O 6500K
+
+# screenshot
+bindsym --release $mod+Shift+A exec scrot -s
 
 # app-specific configuration
 for_window [class="Chromium-browser"] floating disable, move window to workspace current
@@ -198,3 +204,9 @@ for_window [class="Chromium-browser"] floating disable, move window to workspace
 # app-specific bindings
 bindsym $mod+c [class="Chromium-browser"] focus
 bindsym $mod+x [class="URxvt"] focus
+
+# resize
+bindsym $mod+Ctrl+Right resize shrink width 1 px or 1 ppt
+bindsym $mod+Ctrl+Up resize grow height 1 px or 1 ppt
+bindsym $mod+Ctrl+Down resize shrink height 1 px or 1 ppt
+bindsym $mod+Ctrl+Left resize grow width 1 px or 1 ppt
