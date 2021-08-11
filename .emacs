@@ -10,9 +10,9 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(require 'use-package)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
 (use-package diminish)
 
 (defun recompile-packages ()
