@@ -37,11 +37,10 @@
   ("C-M-t" . sp-transpose-sexp)
   ("C-M-k" . sp-kill-sexp))
 
-; code folding
-(use-package hideshow
-  :ensure
-  :diminish hs-minor-mode
-  :hook ((prog-mode . hs-minor-mode)))
+; wrapping
+(add-hook 'prog-mode-hook (lambda ()
+                            (visual-line-mode -1)
+                            (setq truncate-lines t)))
 
 ; compile mode
 (require 'ansi-color)
@@ -70,3 +69,8 @@
   :ensure t
   :mode ("\\.yml\\'" . yaml-mode)
         ("\\.yaml\\'" . yaml-mode))
+
+; docker
+(use-package dockerfile-mode
+  :ensure t
+  :mode ("Dockerfile\\'" . dockerfile-mode))

@@ -13,7 +13,12 @@
 ;; Configure web-mode for .tsx files
 (use-package web-mode
   :ensure t
-  :mode "\\.tsx\\'")
+  :mode ("\\.tsx\\'" . web-mode)
+  :config
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                (tide-mode)))))
 
 ;; Configure tide mode
 (use-package tide

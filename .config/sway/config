@@ -230,3 +230,6 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 # nightlight
 bindsym $mod+Shift+D exec pkill -x gammastep || true && gammastep -P -O 3500K
 bindsym $mod+Shift+F exec pkill -x gammastep || true && gammastep -P -O 6500K
+
+# screenshot
+bindsym $mod+Shift+A exec grimshot save area
