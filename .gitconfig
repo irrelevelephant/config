@@ -13,12 +13,13 @@ d = diff
 ds = diff --staged
 co = checkout
 cm = commit -m
+ca = commit --amend
 b = !git lg1
 a = !git lg2
 [push]
 	default = current
 [core]
-	editor = emacs-snapshot -nw -q
+	editor = emacs -nw -q
 [pull]
 	default = current
 	rebase = true

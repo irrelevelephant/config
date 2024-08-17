@@ -19,4 +19,18 @@ alias emacs='emacs -nw'
 
 source /usr/share/nvm/init-nvm.sh
 alias chromium='chromium --enable-features=UseOzonePlatform --ozone-platform=wayland'
-alias tf='cd ~/trackit.fit/apps/website'
+alias tf='cd ~/trackit.fit/'
+
+ts-replace() {
+  local oldString=$(printf '%s\n' "$1" | sed 's/[.[\*^$(){}?+|/]/\\&/g')
+  local newString=$(printf '%s\n' "$2" | sed 's/[.[\*^$(){}?+|/]/\\&/g')
+
+  find . -type f \( -name "*.ts" -o -name "*.tsx" \) -print0 | while IFS= read -r -d '' file; do
+    # macOS (BSD) sed requires an empty string for the backup suffix to work without making backups
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      sed -i '' "s#$oldString#$newString#g" "$file"
+    else
+      sed -i "s#$oldString#$newString#g" "$file"
+    fi
+  done
+}
