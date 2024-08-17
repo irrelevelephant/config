@@ -14,3 +14,22 @@
 
   (set-face-attribute 'magit-diff-context-highlight nil :background "brightblack" :foreground "brightwhite")
   (set-face-attribute 'magit-section-highlight nil :background "brightblack" :foreground "brightwhite"))
+
+(use-package projectile
+  :ensure t
+  :init
+  (setq projectile-cache-file (expand-file-name "projectile.cache" user-emacs-directory))
+  (setq projectile-indexing-method 'alien)
+  (projectile-mode +1)
+  :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'ido)
+  (setq projectile-enable-caching t)
+  (setq projectile-require-project-root nil)
+  (setq projectile-mode-line-prefix " Proj"))
+
+(use-package counsel-projectile
+  :after (counsel projectile)
+  :ensure t
+  :config
+  (counsel-projectile-mode +1))

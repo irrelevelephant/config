@@ -29,12 +29,12 @@ for src in "${!paths[@]}"; do
     if [ "$sync_direction" == "up" ]; then
         for file in $src_expanded; do
             echo "Syncing $file to $dest_expanded (UP)"
-            rsync -av --progress "$file" "$dest_expanded"
+            rsync -av "$file" "$dest_expanded"
         done
     else
         for file in $dest_expanded; do
             echo "Syncing $file to $src_expanded (DOWN)"
-            rsync -av --progress "$file" "$src_expanded"
+            rsync -av "$file" "$src_expanded"
         done
     fi
 done
