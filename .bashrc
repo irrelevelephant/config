@@ -34,3 +34,7 @@ ts-replace() {
     fi
   done
 }
+
+alias dbmate='DBMATE_ENV=development dbmate'
+
+alias pianoteq="/home/tjs/pianoteq/x86-64bit/'Pianoteq 8 STAGE'"
